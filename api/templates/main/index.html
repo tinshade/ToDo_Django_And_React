@@ -37,8 +37,12 @@
       <div class="text-center container p-3">
         <p>Did you upload via API? Process the upload!</p>
         <div id="main">
-        <button class="btn btn-primary" type="submit" id='process'>Process</button>
+          <button class="btn btn-primary" type="submit" id='process'>Process</button>
         </div>
+        <br>
+        {% load static %}
+        <small><a target="_blank" title="Download the template file!" href="{% static 'TemplateFile.xlsx' %}" class="text-danger">Don't have the template file?</a></small>
+        <br/>
         <div id="load" style="display: none;">
           <h1 class="text-primary"> LOADING.. </h1>
         </div>
