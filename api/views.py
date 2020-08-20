@@ -1,25 +1,22 @@
 from django.shortcuts import render
+from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import TaskSerializer, BlukUploadSerializer
-from .models import Task,BulkUpload, AutoData
-import os
 from tablib import Dataset
+from .serializers import *
+from .models import *
 from .resources import AutoDataResource
-from django.http import JsonResponse
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+
+def apionly(request):
+    return render(request, 'main/only.html', {'title': 'Are you Lost? | ToDo Display'})
+
+
+    
 def home(request):
     stuff = Task.objects.all()
     data = AutoData.objects.all()
     return render(request, 'main/index.html', {'title':'ToDo Display', 'items': stuff, 'data': data})
-
-
-
-
-
-## Rest of the CRUD ##
-
 
 @api_view(['GET'])
 def api_overview(request):
@@ -60,19 +57,14 @@ def taskBulk(request):
         serializer.save()
     return Response(serializer.data)
     
-##Buddy View##
+## Upload on button click ##
 def parse_upload(request):
     data_store = AutoDataResource()
     dataset = Dataset()
-    #data_file = open(os.path.join(BASE_DIR, b.bulkfile.url),"r")
     data_file = BulkUpload.objects.all().order_by('-id')[0].bulkfile
     imported_data = dataset.load(data_file.read())
     result = data_store.import_data(dataset, dry_run=False)
     return JsonResponse({"r": "Done"}, safe=False)
-
-
-
-
 
 @api_view(['POST'])
 def taskUpdate(request, pk):
