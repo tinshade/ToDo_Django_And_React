@@ -21,7 +21,7 @@
         <div class="container p-5" style="background-color: lightblue;">
             <div class="row text-center">
                 {% for item in items %}
-                <div class="col-lg-4 col-md-4 col-sm-12 p-2" style="background-color: lightcoral">
+                <div class="col-lg-4 col-md-4 col-sm-12 p-2" style="background-color: lightpink">
                     <h1>{{item.title}}</h1>
                     <img class="img-fluid" src="{{item.image.url}}" alt="{{item.title}}"/>
                     <small class="text-muted">Here is your file!</small>
@@ -33,10 +33,87 @@
             </div>
         </div>
     </section>
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <section class="container-fluid text-center">
+      <h1>Add in the EXCEL File and see the data!</h1>
+      <div class="text-center container p-3">
+        <p>Did you upload via API? Process the upload!</p>
+        <div id="main">
+        <button class="btn btn-primary" type="submit" id='process'>Process</button>
+        </div>
+        <div id="load" style="display: none;">
+          <h1 class="text-primary"> LOADING.. </h1>
+        </div>
+        <div id="sucdiv" style="display: none;">
+          <h1 id="result" class="text-success"></h1>
+        </div>
+        <div id="erdiv" style="display: none;">
+          <h1 class="text-danger"> FAILED </h1>
+        </div>
+      </div>
+      <br>
+      <hr>
+      <br>
+      <div class="container">
+        <div class="row">
+          {% for d in data %}
+          <div class="col-lg-4 col-md-4 col-sm-12">
+            <h4>{{d.u_name}}</h4>
+            <div class="d-sm-flex container justify-content-between">
+              <small>{{d.email_id}}</small>
+              <small>{{d.phone}}</small>
+            </div>
+            <br>
+            <div class="container p-2">
+              <label>Status</label>
+              {% if d.is_active %}
+              <small class="text-success">Active</small>
+              {% else %}
+              <small class="text-danger">Inactive</small>
+              {% endif %}
+              <br>
+              <article class="p-2">
+                {{d.bio}}
+              </article>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        
+        
+      </div>
+    </section>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      $(function() {  
+      $("#process").click(function(e) {
+        e.preventDefault();
+        $('#load').show();
+        $('#sucdiv').hide();
+        $('#erdiv').hide();
+        $('#main').hide();
+        $.ajax({
+          type: "GET",
+          url: "parse_upload",
+          async: false,
+          success:function(reply){
+            $('#sucdiv').show()
+            $('#erdiv').hide()
+            $('#load').hide();
+            $('#main').hide();
+            $('#result').html = reply['r']
+          },
+          error:function(xhr){
+            $('#erdiv').show()
+            $('#sucdiv').hide()
+            $('#load').hide();
+            $('#main').hide();
+          }
+        })
+        
+      })
+    })
+    </script>
   </body>
 </html>
